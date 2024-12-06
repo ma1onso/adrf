@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 from typing import List, Optional
 
 from asgiref.sync import async_to_sync, sync_to_async
@@ -64,7 +65,7 @@ class APIView(DRFAPIView):
             else:
                 handler = self.http_method_not_allowed
 
-            if asyncio.iscoroutinefunction(handler):
+            if inspect.isasyncgenfunction(handler):
                 response = await handler(request, *args, **kwargs)
             else:
                 response = await sync_to_async(handler)(request, *args, **kwargs)
@@ -108,7 +109,7 @@ class APIView(DRFAPIView):
         sync_permissions, async_permissions = [], []
 
         for permission in permissions:
-            if asyncio.iscoroutinefunction(permission.has_permission):
+            if inspect.isasyncgenfunction(permission.has_permission):
                 async_permissions.append(permission)
             else:
                 sync_permissions.append(permission)
@@ -167,7 +168,7 @@ class APIView(DRFAPIView):
         sync_permissions, async_permissions = [], []
 
         for permission in permissions:
-            if asyncio.iscoroutinefunction(permission.has_object_permission):
+            if inspect.isasyncgenfunction(permission.has_object_permission):
                 async_permissions.append(permission)
             else:
                 sync_permissions.append(permission)
@@ -237,7 +238,7 @@ class APIView(DRFAPIView):
         sync_throttles, async_throttles = [], []
 
         for throttle in throttles:
-            if asyncio.iscoroutinefunction(throttle.allow_request):
+            if inspect.isasyncgenfunction(throttle.allow_request):
                 async_throttles.append(throttle)
             else:
                 sync_throttles.append(throttle)
