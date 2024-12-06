@@ -68,7 +68,7 @@ class APIView(DRFAPIView):
             if inspect.isasyncgenfunction(handler):
                 response = await handler(request, *args, **kwargs)
             else:
-                response = await sync_to_async(handler)(request, *args, **kwargs)
+                response = await sync_to_async(handler)(request, *args, **kwargs)  # Call the handler asynchronously
 
         except Exception as exc:
             response = self.handle_exception(exc)
